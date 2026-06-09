@@ -33,6 +33,7 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_VIEW_PROPERTY(identifier, NSString)
+RCT_EXPORT_VIEW_PROPERTY(clusteringIdentifier, NSString)
 RCT_REMAP_VIEW_PROPERTY(testID, accessibilityIdentifier, NSString)
 //RCT_EXPORT_VIEW_PROPERTY(reuseIdentifier, NSString)
 RCT_EXPORT_VIEW_PROPERTY(title, NSString)

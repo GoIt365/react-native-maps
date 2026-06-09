@@ -99,3 +99,10 @@ export type MarkerPressEvent = NativeSyntheticEvent<{
    */
   position?: Point;
 }>;
+
+export type ClusterPressEvent = NativeSyntheticEvent<{
+  action: 'cluster-press';
+  coordinate: LatLng;
+  count: number;
+  memberIds: string[];
+}>;

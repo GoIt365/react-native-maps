@@ -28,6 +28,7 @@ NSInteger const AIR_CALLOUT_OPEN_ZINDEX_BASELINE = 999;
     BOOL _calloutIsOpen;
     NSInteger _zIndexBeforeOpen;
     BOOL _useLegacyPinView;
+    NSString *_airMapClusteringIdentifier;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -96,6 +97,9 @@ NSInteger const AIR_CALLOUT_OPEN_ZINDEX_BASELINE = 999;
 
             _pinView.draggable = self.draggable;
             _pinView.layer.zPosition = self.zIndex;
+            if (@available(iOS 11.0, *)) {
+                _pinView.clusteringIdentifier = _airMapClusteringIdentifier;
+            }
 
             return _pinView;
         }
@@ -112,6 +116,9 @@ NSInteger const AIR_CALLOUT_OPEN_ZINDEX_BASELINE = 999;
         _markerView.markerTintColor = self.pinColor;
         _markerView.titleVisibility = self.titleVisibility ?: MKFeatureVisibilityHidden;
         _markerView.subtitleVisibility = self.subtitleVisibility ?: MKFeatureVisibilityHidden;
+        if (@available(iOS 11.0, *)) {
+            _markerView.clusteringIdentifier = _airMapClusteringIdentifier;
+        }
 
         }
         return _markerView ?: _pinView;
@@ -121,6 +128,9 @@ NSInteger const AIR_CALLOUT_OPEN_ZINDEX_BASELINE = 999;
         // In either case, we want to return the AIRMapMarker since it is both an MKAnnotation and an
         // MKAnnotationView all at the same time.
         self.layer.zPosition = self.zIndex;
+        if (@available(iOS 11.0, *)) {
+            [super setClusteringIdentifier:_airMapClusteringIdentifier];
+        }
         return self;
     }
 }
@@ -352,6 +362,22 @@ NSInteger const AIR_CALLOUT_OPEN_ZINDEX_BASELINE = 999;
                                                                          self.image = image;
                                                                      });
                                                                  }];
+}
+
+- (NSString *)clusteringIdentifier
+{
+    return _airMapClusteringIdentifier;
+}
+
+- (void)setClusteringIdentifier:(NSString *)clusteringIdentifier
+{
+    _airMapClusteringIdentifier = [clusteringIdentifier copy];
+
+    if (@available(iOS 11.0, *)) {
+        [super setClusteringIdentifier:_airMapClusteringIdentifier];
+        _pinView.clusteringIdentifier = _airMapClusteringIdentifier;
+        _markerView.clusteringIdentifier = _airMapClusteringIdentifier;
+    }
 }
 
 - (void)setPinColor:(UIColor *)pinColor

@@ -146,6 +146,14 @@ export type MapMarkerProps = ViewProps & {
   identifier?: string;
 
   /**
+   * Enables native MapKit annotation clustering for markers sharing this identifier.
+   *
+   * @platform iOS: Apple Maps only
+   * @platform Android: Not supported
+   */
+  clusteringIdentifier?: string;
+
+  /**
    * A custom image to be used as the marker's icon. Only local image resources are allowed to be used.
    *
    * @platform iOS: Supported

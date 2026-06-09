@@ -21,6 +21,7 @@ import * as ProviderConstants from './ProviderConstants';
 import {
   CalloutPressEvent,
   ClickEvent,
+  ClusterPressEvent,
   Frame,
   LatLng,
   MarkerDeselectEvent,
@@ -293,6 +294,14 @@ export type MapViewProps = ViewProps & {
    * @platform Android: Supported
    */
   onCalloutPress?: (event: CalloutPressEvent) => void;
+
+  /**
+   * Callback that is called when a native MapKit marker cluster is tapped.
+   *
+   * @platform iOS: Apple Maps only
+   * @platform Android: Not supported
+   */
+  onClusterPress?: (event: ClusterPressEvent) => void;
 
   /**
    * Callback that is called when user double taps on the map.

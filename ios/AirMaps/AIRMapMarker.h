@@ -27,6 +27,7 @@
 @property (nonatomic, weak) RCTBridge *bridge;
 
 @property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, copy) NSString *clusteringIdentifier;
 @property (nonatomic, copy) NSString *imageSrc;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;

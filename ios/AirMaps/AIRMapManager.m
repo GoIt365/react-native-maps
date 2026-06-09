@@ -119,6 +119,7 @@ RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLongPress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDoublePress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMarkerPress, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onClusterPress, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMarkerSelect, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMarkerDeselect, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMarkerDragStart, RCTDirectEventBlock)
@@ -805,6 +806,39 @@ RCT_EXPORT_METHOD(getAddressFromCoordinates:(nonnull NSNumber *)reactTag
 
 - (void)mapView:(AIRMap *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
+    if (@available(iOS 11.0, *)) {
+        if ([view.annotation isKindOfClass:[MKClusterAnnotation class]]) {
+            MKClusterAnnotation *cluster = (MKClusterAnnotation *)view.annotation;
+            NSMutableArray<NSString *> *memberIds = [NSMutableArray new];
+
+            for (id<MKAnnotation> member in cluster.memberAnnotations) {
+                if (![member isKindOfClass:[AIRMapMarker class]]) continue;
+
+                NSString *identifier = ((AIRMapMarker *)member).identifier;
+                if (identifier.length > 0) {
+                    [memberIds addObject:identifier];
+                }
+            }
+
+            [memberIds sortUsingSelector:@selector(compare:)];
+
+            if (mapView.onClusterPress) {
+                mapView.onClusterPress(@{
+                    @"action": @"cluster-press",
+                    @"coordinate": @{
+                        @"latitude": @(cluster.coordinate.latitude),
+                        @"longitude": @(cluster.coordinate.longitude),
+                    },
+                    @"count": @(cluster.memberAnnotations.count),
+                    @"memberIds": memberIds,
+                });
+            }
+
+            [mapView deselectAnnotation:cluster animated:NO];
+            return;
+        }
+    }
+
     if ([view.annotation isKindOfClass:[AIRMapMarker class]]) {
         [(AIRMapMarker *)view.annotation showCalloutView];
     } else if ([view.annotation isKindOfClass:[MKUserLocation class]] && mapView.userLocationAnnotationTitle != nil && view.annotation.title != mapView.userLocationAnnotationTitle) {
